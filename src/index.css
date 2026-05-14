@@ -1,0 +1,114 @@
+@import "tailwindcss";
+
+@variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-display: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-cream-50: #fffdfb;
+  --color-cream-100: #fdfbf7;
+  --color-cream-200: #f4f0e8;
+  --color-sage-500: #5c7361;
+  --color-sage-700: #3d4a40;
+  --color-espresso-900: #1c1612;
+  --color-accent: #2d6a4f;
+  --color-accent-soft: rgba(45, 106, 79, 0.12);
+
+  --color-night-800: #1a1816;
+  --color-night-900: #12100e;
+  --color-night-950: #0a0908;
+
+  --shadow-soft:
+    0 24px 48px -12px rgba(28, 22, 18, 0.08),
+    0 12px 24px -8px rgba(28, 22, 18, 0.06);
+  --shadow-inner-highlight: inset 0 1px 1px rgba(255, 255, 255, 0.55);
+
+  --ease-premium: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@layer base {
+  html {
+    @apply scroll-smooth antialiased;
+  }
+
+  body {
+    @apply min-h-[100dvh] overflow-x-hidden bg-cream-100 font-sans text-espresso-900 transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)];
+    font-feature-settings: "kern" 1, "liga" 1;
+  }
+
+  #root {
+    @apply min-h-[100dvh] min-w-0 overflow-x-hidden;
+  }
+
+  .dark body {
+    @apply bg-night-950 text-cream-100;
+  }
+
+  ::selection {
+    @apply bg-accent/15 text-espresso-900;
+  }
+
+  .dark ::selection {
+    @apply bg-accent/35 text-cream-50;
+  }
+}
+
+/* Grain fixe — pointer-events none, couche légère */
+.grain-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.dark .grain-overlay {
+  opacity: 0.055;
+}
+
+/* Texte & surfaces — mode sombre cohérent sur toutes les pages */
+@layer components {
+  .tt-overline {
+    @apply text-[10px] font-semibold uppercase tracking-[0.2em] text-sage-700 dark:text-emerald-200/80;
+  }
+  .tt-overline-sm {
+    @apply text-xs font-medium uppercase tracking-[0.16em] text-sage-700 dark:text-emerald-200/75;
+  }
+  .tt-page-title {
+    @apply font-display text-3xl font-semibold text-espresso-900 dark:text-cream-50 md:text-4xl;
+  }
+  .tt-body-muted {
+    @apply text-espresso-900/65 dark:text-cream-100/70;
+  }
+  /* Champs : léger contour uniquement (pas de bordure épaisse ni relief fort) */
+  .tt-field-outline {
+    @apply border-0 bg-cream-50 px-4 py-3 text-sm text-espresso-900 outline-none ring-1 ring-espresso-900/[0.07] transition-[box-shadow,ring-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-espresso-900/35 focus:ring-accent/28 dark:bg-night-900 dark:text-cream-50 dark:ring-white/[0.09] dark:placeholder:text-cream-100/35 dark:focus:ring-accent/38;
+  }
+  .tt-textarea {
+    @apply min-h-[7.5rem] w-full resize-y rounded-[calc(1.25rem-0.375rem)] border-0 bg-cream-50 px-4 py-3 text-sm text-espresso-900 outline-none ring-1 ring-espresso-900/[0.07] transition-[box-shadow,ring-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-espresso-900/35 focus:ring-accent/28 dark:bg-night-900 dark:text-cream-50 dark:ring-white/[0.09] dark:placeholder:text-cream-100/35 dark:focus:ring-accent/38;
+  }
+  .tt-select {
+    @apply w-full cursor-pointer appearance-none rounded-[calc(1.25rem-0.375rem)] border-0 bg-cream-50 bg-[length:1rem] bg-[right_1rem_center] bg-no-repeat px-4 py-3 pr-10 text-sm text-espresso-900 outline-none ring-1 ring-espresso-900/[0.07] transition-[box-shadow,ring-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] focus:ring-accent/28 dark:bg-night-900 dark:text-cream-50 dark:ring-white/[0.09] dark:focus:ring-accent/38;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23666'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  }
+  .dark .tt-select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23d6cfc7'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'/%3E%3C/svg%3E");
+  }
+  .tt-search-input {
+    @apply w-full rounded-2xl border-0 bg-cream-50 px-4 py-3 text-sm text-espresso-900 outline-none ring-1 ring-espresso-900/[0.07] transition-[box-shadow,ring-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] placeholder:text-espresso-900/45 focus:ring-accent/28 dark:bg-night-800 dark:text-cream-50 dark:ring-white/[0.09] dark:placeholder:text-cream-100/40 dark:focus:ring-accent/38;
+  }
+  .tt-btn-primary-solid {
+    @apply rounded-full bg-espresso-900 px-6 py-3 text-sm font-semibold text-cream-50 transition-[transform,background-color] duration-500 ease-[cubic-bezier(0.32,0.72,0,1)] hover:bg-espresso-900/95 active:scale-[0.98] dark:bg-cream-100 dark:text-night-950 dark:hover:bg-cream-50;
+  }
+  .tt-chip {
+    @apply rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.14em] transition-colors duration-500 ease-[cubic-bezier(0.32,0.72,0,1)];
+  }
+  .tt-chip-active {
+    @apply bg-espresso-900 text-cream-50 dark:bg-cream-100 dark:text-night-950;
+  }
+  .tt-chip-inactive {
+    @apply bg-cream-200/70 text-espresso-900/80 hover:bg-cream-200 dark:bg-night-800 dark:text-cream-100/90 dark:ring-1 dark:ring-white/10 dark:hover:bg-night-800/90;
+  }
+}
