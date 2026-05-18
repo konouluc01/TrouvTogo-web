@@ -76,7 +76,7 @@ export function HomePage() {
     ;(async () => {
       try {
         const [o, s] = await Promise.all([
-          objetsApi.listObjets({ size: 6, page: 0 }),
+          objetsApi.listObjets({ size: 3, page: 0 }),
           statsApi.getCommunauteStats(),
         ])
         if (cancelled) return

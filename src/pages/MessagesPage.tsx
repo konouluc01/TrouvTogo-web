@@ -68,6 +68,7 @@ export function MessagesPage() {
         if (cancelled) return
         if (res.success && res.data) {
           setObjet(res.data)
+          setComposeText(`Bonjour, je vous contacte au sujet de l'annonce : "${res.data.titre}"`)
         } else {
           setObjet(null)
           setObjetError(res.message || 'Annonce introuvable.')
