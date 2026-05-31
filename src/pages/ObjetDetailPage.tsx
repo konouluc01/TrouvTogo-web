@@ -12,12 +12,17 @@ import { openStreetMapEmbedUrl, openStreetMapUrl } from '../lib/geo'
 import { useAuth } from '../context/useAuth'
 import { isObjetOwner } from '../utils/objet-ownership'
 import { formatMontantXof } from '../lib/money'
+import { SignalementModal } from '../components/objet/SignalementModal'
+import { useToast } from '../context/ToastContext'
 
 export function ObjetDetailPage() {
   const { id } = useParams()
   const { user } = useAuth()
+  const toast = useToast()
   const [objet, setObjet] = useState<Objet | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [isSignalModalOpen, setIsSignalModalOpen] = useState(false)
+  const [isSignalling, setIsSignalling] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -36,6 +41,27 @@ export function ObjetDetailPage() {
       cancelled = true
     }
   }, [id])
+
+  async function handleSignalement(message: string) {
+    if (!objet) return
+    setIsSignalling(true)
+    try {
+      const res = await objetsApi.createSignalement(objet.id, message)
+      if (res.success) {
+        toast.push({
+          variant: 'success',
+          message: 'Merci. Votre signalement a été envoyé à l’administration.',
+        })
+        setIsSignalModalOpen(false)
+      } else {
+        toast.push({ variant: 'error', message: res.message || 'Erreur lors de l’envoi.' })
+      }
+    } catch {
+      toast.push({ variant: 'error', message: 'Impossible d’envoyer le signalement.' })
+    } finally {
+      setIsSignalling(false)
+    }
+  }
 
   if (error) {
     return (
@@ -240,13 +266,21 @@ export function ObjetDetailPage() {
                   </Button>
                 </Link>
               ) : user ? (
-                <Link to={`/messages?objet=${objet.id}`}>
+                <>
+                  <Link to={`/messages?objet=${objet.id}`}>
+                    <Button
+                      trailing={<span className="text-lg leading-none">↗</span>}
+                    >
+                      Contacter via la plateforme
+                    </Button>
+                  </Link>
                   <Button
-                    trailing={<span className="text-lg leading-none">↗</span>}
+                    variant="secondary"
+                    onClick={() => setIsSignalModalOpen(true)}
                   >
-                    Contacter via la plateforme
+                    Signaler l'annonce
                   </Button>
-                </Link>
+                </>
               ) : (
                 <Link to="/connexion" state={{ from: { pathname: `/objets/${objet.id}` } }}>
                   <Button variant="primary">
@@ -265,6 +299,15 @@ export function ObjetDetailPage() {
           </div>
         </div>
       </article>
+
+      <SignalementModal
+        open={isSignalModalOpen}
+        onClose={() => setIsSignalModalOpen(false)}
+        onConfirm={handleSignalement}
+        pending={isSignalling}
+        itemLabel={objet.titre}
+      />
+
       <Footer />
     </PageFade>
   )

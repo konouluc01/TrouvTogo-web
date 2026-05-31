@@ -1,6 +1,6 @@
 import { type ButtonHTMLAttributes, type ReactNode } from 'react'
 
-type Variant = 'primary' | 'ghost' | 'outline'
+type Variant = 'primary' | 'ghost' | 'outline' | 'secondary'
 
 const variants: Record<Variant, string> = {
   primary:
@@ -9,6 +9,8 @@ const variants: Record<Variant, string> = {
     'bg-cream-200/60 text-espresso-900 ring-1 ring-espresso-900/5 hover:bg-cream-200 dark:bg-night-800/80 dark:text-cream-100 dark:ring-white/10 dark:hover:bg-night-800',
   outline:
     'bg-transparent text-espresso-900 ring-1 ring-espresso-900/15 hover:ring-espresso-900/30 dark:text-cream-100 dark:ring-cream-100/25 dark:hover:ring-cream-100/45',
+  secondary:
+    'bg-cream-200/60 text-espresso-900 ring-1 ring-espresso-900/5 hover:bg-cream-200 dark:bg-night-800/80 dark:text-cream-100 dark:ring-white/10 dark:hover:bg-night-800',
 }
 
 export function Button({

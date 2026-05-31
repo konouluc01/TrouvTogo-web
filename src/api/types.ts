@@ -198,6 +198,10 @@ export interface Signalement {
   resolvedAt?: string | null
 }
 
+export interface SignalementPayload {
+  message: string
+}
+
 export interface CategoriePayload {
   nom: string
   description?: string

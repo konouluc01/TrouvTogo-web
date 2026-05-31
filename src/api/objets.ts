@@ -92,3 +92,11 @@ export async function getMesObjets() {
   )
   return data
 }
+
+export async function createSignalement(id: number, message: string) {
+  const { data } = await apiClient.post<ApiResponse<any>>(
+    `/api/objets/${id}/signalement`,
+    { message },
+  )
+  return data
+}
