@@ -6,7 +6,10 @@ import type { Categorie, Objet, TypeObjet } from '../api/types'
 import { Footer } from '../components/layout/Footer'
 import { PageFade } from '../components/layout/PageFade'
 import { ObjetCard } from '../components/objet/ObjetCard'
+import { PaginationBar } from '../components/ui/PaginationBar'
 import { libelleCategorie } from '../lib/categoryLabels'
+
+const PAGE_SIZE = 6
 
 export function ObjetsBrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams()
@@ -18,6 +21,7 @@ export function ObjetsBrowsePage() {
   const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
+  const [totalElements, setTotalElements] = useState(0)
 
   const categorieParam = searchParams.get('categorie')
   const categorieId =
@@ -38,16 +42,17 @@ export function ObjetsBrowsePage() {
             type: typeParam ?? undefined,
             categorieId,
             page,
-            size: 12,
+            size: PAGE_SIZE,
           })
         : await objetsApi.listObjets({
             type: typeParam ?? undefined,
             page,
-            size: 12,
+            size: PAGE_SIZE,
           })
       if (res.success && res.data) {
         setItems(res.data.content)
         setTotalPages(res.data.totalPages)
+        setTotalElements(res.data.totalElements)
       }
     } catch {
       setItems([])
@@ -169,26 +174,14 @@ export function ObjetsBrowsePage() {
                 <ObjetCard key={o.id} objet={o} index={i} />
               ))}
             </div>
-            {totalPages > 1 ? (
-              <div className="mt-12 flex justify-center gap-3">
-                <button
-                  type="button"
-                  disabled={page <= 0}
-                  onClick={() => setPage((p) => Math.max(0, p - 1))}
-                  className="rounded-full bg-cream-200 px-5 py-2 text-sm font-semibold text-espresso-900 transition-colors disabled:opacity-40 dark:bg-night-800 dark:text-cream-100 dark:ring-1 dark:ring-white/10"
-                >
-                  Précédent
-                </button>
-                <button
-                  type="button"
-                  disabled={page >= totalPages - 1}
-                  onClick={() => setPage((p) => p + 1)}
-                  className="rounded-full bg-cream-200 px-5 py-2 text-sm font-semibold text-espresso-900 transition-colors disabled:opacity-40 dark:bg-night-800 dark:text-cream-100 dark:ring-1 dark:ring-white/10"
-                >
-                  Suivant
-                </button>
-              </div>
-            ) : null}
+            <PaginationBar
+              page={page + 1}
+              totalPages={totalPages}
+              totalItems={totalElements}
+              rangeStart={page * PAGE_SIZE + 1}
+              rangeEnd={Math.min((page + 1) * PAGE_SIZE, totalElements)}
+              onPageChange={(p) => setPage(p - 1)}
+            />
           </>
         )}
       </div>
