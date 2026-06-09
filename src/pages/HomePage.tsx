@@ -12,6 +12,7 @@ import { Footer } from '../components/layout/Footer'
 import { ObjetCard } from '../components/objet/ObjetCard'
 import { Button } from '../components/ui/Button'
 import { CardShell } from '../components/ui/CardShell'
+import { ImageCarousel } from '../components/ui/ImageCarousel'
 
 const testimonialAvatarTones = [
   'bg-accent/15 text-accent ring-accent/30',
@@ -364,13 +365,11 @@ export function HomePage() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.85, ease: [0.32, 0.72, 0, 1] }}
-            className="order-2 overflow-hidden rounded-[2rem] ring-1 ring-espresso-900/10 dark:ring-white/10 lg:order-1"
+            className="order-2 lg:order-1"
           >
-            <img
-              src={LANDING_IMAGES.hands}
-              alt=""
-              className="aspect-[5/4] w-full object-cover"
-              loading="lazy"
+            <ImageCarousel 
+              images={[...LANDING_IMAGES.carousel]} 
+              interval={4000} 
             />
           </motion.div>
           <div className="order-1 space-y-6 text-left lg:order-2">

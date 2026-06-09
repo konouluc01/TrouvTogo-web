@@ -9,6 +9,10 @@ import imgCommunityHands from '../assets/images/close-up-community-concept-with-
 import imgFlagTogo from '../assets/images/flag-togo.webp'
 import imgGroupAfricans from '../assets/images/group-africans-feeling-excited-about-what-they-saw-their-cellphone.webp'
 import imgTogoFlag3d from '../assets/images/togo-national-flag-isolated-3d-white-background.webp'
+import imgFound from '../assets/images/found.webp'
+import imgFound1 from '../assets/images/found1.webp'
+import imgLost from '../assets/images/lost.webp'
+import imgTrouvTogo from '../assets/images/trouvtogo.webp'
 
 /** Poster hero / secours reduced-motion — visuel togolais */
 export const HERO_VIDEO_POSTER = imgFlagTogo
@@ -38,6 +42,13 @@ export const LANDING_IMAGES = {
   street: imgCitySunset,
   /** Section « Pourquoi » & pages auth — drapeau Togo (identité locale) */
   hands: imgTogoFlag3d,
+  carousel: [
+    imgTogoFlag3d,
+    imgFound,
+    imgFound1,
+    imgLost,
+    imgTrouvTogo,
+  ],
 } as const
 
 /** Visuels pages connexion / inscription (split image | formulaire) */
