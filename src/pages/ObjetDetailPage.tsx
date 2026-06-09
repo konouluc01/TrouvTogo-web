@@ -13,16 +13,21 @@ import { useAuth } from '../context/useAuth'
 import { isObjetOwner } from '../utils/objet-ownership'
 import { formatMontantXof } from '../lib/money'
 import { SignalementModal } from '../components/objet/SignalementModal'
+import { TwoStepDeleteModal } from '../components/ui/TwoStepDeleteModal'
 import { useToast } from '../context/ToastContext'
+import { useNavigate } from 'react-router-dom'
 
 export function ObjetDetailPage() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { user } = useAuth()
   const toast = useToast()
   const [objet, setObjet] = useState<Objet | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [isSignalModalOpen, setIsSignalModalOpen] = useState(false)
   const [isSignalling, setIsSignalling] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
 
   useEffect(() => {
     if (!id) return
@@ -60,6 +65,25 @@ export function ObjetDetailPage() {
       toast.push({ variant: 'error', message: 'Impossible d’envoyer le signalement.' })
     } finally {
       setIsSignalling(false)
+    }
+  }
+
+  async function handleDelete() {
+    if (!objet) return
+    setIsDeleting(true)
+    try {
+      const res = await objetsApi.deleteObjet(objet.id)
+      if (res.success) {
+        toast.push({ variant: 'success', message: 'Annonce supprimée avec succès.' })
+        navigate('/objets')
+      } else {
+        toast.push({ variant: 'error', message: res.message || 'Erreur lors de la suppression.' })
+      }
+    } catch {
+      toast.push({ variant: 'error', message: 'Impossible de supprimer l’annonce.' })
+    } finally {
+      setIsDeleting(false)
+      setIsDeleteModalOpen(false)
     }
   }
 
@@ -260,11 +284,20 @@ export function ObjetDetailPage() {
             </CardShell>
             <div className="flex flex-wrap gap-3">
               {isOwner ? (
-                <Link to={`/objets/${objet.id}/modifier`}>
-                  <Button variant="primary">
-                    Modifier mon annonce
+                <>
+                  <Link to={`/objets/${objet.id}/modifier`}>
+                    <Button variant="primary">
+                      Modifier mon annonce
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    className="!border-red-500/35 !text-red-700 !ring-red-500/30 hover:!bg-red-500/10 dark:!border-red-400/40 dark:!text-red-300"
+                    onClick={() => setIsDeleteModalOpen(true)}
+                  >
+                    Supprimer
                   </Button>
-                </Link>
+                </>
               ) : user ? (
                 <>
                   <Link to={`/messages?objet=${objet.id}`}>
@@ -305,6 +338,14 @@ export function ObjetDetailPage() {
         onClose={() => setIsSignalModalOpen(false)}
         onConfirm={handleSignalement}
         pending={isSignalling}
+        itemLabel={objet.titre}
+      />
+
+      <TwoStepDeleteModal
+        open={isDeleteModalOpen}
+        onClose={() => setIsDeleteModalOpen(false)}
+        onConfirmDelete={handleDelete}
+        pending={isDeleting}
         itemLabel={objet.titre}
       />
 
